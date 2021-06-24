@@ -372,6 +372,15 @@ void s1ap::build_tai_cgi()
 /*******************************************************************************
 /* RRC interface
 ********************************************************************************/
+
+void s1ap::initial_ue_reject(uint16_t                              rnti,
+                      uint32_t                              enb_cc_idx,
+                      asn1::s1ap::rrc_establishment_cause_e cause,
+                      srsran::unique_byte_buffer_t          pdu)
+{
+    rrc->write_dl_info(rnti, std::move(pdu));
+}
+
 void s1ap::initial_ue(uint16_t                              rnti,
                       uint32_t                              enb_cc_idx,
                       asn1::s1ap::rrc_establishment_cause_e cause,

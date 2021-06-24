@@ -51,6 +51,11 @@ public:
     uint16_t dl_hfn, ul_hfn;
   };
 
+
+  virtual void initial_ue_reject(uint16_t                              rnti,
+                          uint32_t                              enb_cc_idx,
+                          asn1::s1ap::rrc_establishment_cause_e cause,
+                          srsran::unique_byte_buffer_t          pdu) = 0;
   virtual void initial_ue(uint16_t                              rnti,
                           uint32_t                              enb_cc_idx,
                           asn1::s1ap::rrc_establishment_cause_e cause,
