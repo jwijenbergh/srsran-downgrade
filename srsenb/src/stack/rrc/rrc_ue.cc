@@ -483,28 +483,31 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
   uint8_t msg_type;
   liblte_mme_parse_msg_header((LIBLTE_BYTE_MSG_STRUCT*)pdu.get(), &pd, &msg_type);
 
-  // If we get an attach request, send a downgrade
-  if (msg_type == LIBLTE_MME_MSG_TYPE_ATTACH_REQUEST)
+  // If we get a service request, send a downgrade
+  if (msg_type == LIBLTE_MME_SECURITY_HDR_TYPE_SERVICE_REQUEST)
   {
     // Setup reject cause to downgrade to 3G
     uint8 cause = LIBLTE_MME_EMM_CAUSE_EPS_SERVICES_NOT_ALLOWED;
-    srsran::console("Received Attach Request\n");
-    srsran::console("Downgrading by sending Attach Reject. Cause= %02X\n", cause);
+    srsran::console("Received Service Request\n");
+    srsran::console("Downgrading by sending Service Reject. Cause= %02X\n", cause);
 
-    // Initialize attach reject buffer
-    srsran::unique_byte_buffer_t attach_rejmsg = srsran::make_byte_buffer();
+    // Initialize service reject buffer
+    srsran::unique_byte_buffer_t service_rejmsg = srsran::make_byte_buffer();
 
-    // Set up the attach reject struct using the cause we defined
-    LIBLTE_MME_ATTACH_REJECT_MSG_STRUCT attachrej_struct;
-    attachrej_struct.emm_cause           = cause;
-    attachrej_struct.esm_msg_present     = false;
-    attachrej_struct.t3446_value_present = false;
+    // Set up the service reject struct using the cause we defined
+    LIBLTE_MME_SERVICE_REJECT_MSG_STRUCT servicerej_struct;
+    servicerej_struct.emm_cause           = cause;
+    servicerej_struct.t3442_present     = false;
+    servicerej_struct.t3446_present = false;
 
-    // Pack the attach reject with the specified struct to the buffer
-    liblte_mme_pack_attach_reject_msg(&attachrej_struct, (LIBLTE_BYTE_MSG_STRUCT*)attach_rejmsg.get());
+    // Pack the service reject with the specified struct to the buffer
+    liblte_mme_pack_service_reject_msg(&servicerej_struct,
+				       LIBLTE_MME_SECURITY_HDR_TYPE_PLAIN_NAS,
+				       0,
+				       (LIBLTE_BYTE_MSG_STRUCT*)service_rejmsg.get());
 
     // Send using the rrc interface with the s1ap interface as parent
-    parent->s1ap->initial_ue_reject(rnti, enb_cc_idx, s1ap_cause, std::move(attach_rejmsg));
+    parent->s1ap->initial_ue_reject(rnti, enb_cc_idx, s1ap_cause, std::move(service_rejmsg));
 
     // Send RRC Connection release
     send_connection_release();
