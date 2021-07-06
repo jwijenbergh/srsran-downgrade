@@ -478,12 +478,12 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
 
   uint32_t enb_cc_idx = ue_cell_list.get_ue_cc_idx(UE_PCELL_CC_IDX)->cell_common->enb_cc_idx;
 
-
   // Parse header
   uint8_t pd;
   uint8_t msg_type;
   liblte_mme_parse_msg_header((LIBLTE_BYTE_MSG_STRUCT*)pdu.get(), &pd, &msg_type);
-  // If we get a attach request, send a downgrade
+
+  // If we get an attach request, send a downgrade
   if (msg_type == LIBLTE_MME_MSG_TYPE_ATTACH_REQUEST)
   {
     // Setup reject cause to downgrade to 3G
@@ -505,9 +505,13 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
 
     // Send using the rrc interface with the s1ap interface as parent
     parent->s1ap->initial_ue_reject(rnti, enb_cc_idx, s1ap_cause, std::move(attach_rejmsg));
+
+    // Send RRC Connection release
     send_connection_release();
-  }  // otherwise send the initial ue message like normal
-  else
+    // Remove user thread after RRC Connection Release has been sent, taken from void rrc::process_release_complete(uint16_t rnti) in rrc.cc srsenb
+    parent->task_sched.defer_callback(50, [this]() { parent->rem_user_thread(rnti); });
+  }
+  else // otherwise send the initial ue message like normal
   {
     if (has_tmsi) {
       parent->s1ap->initial_ue(rnti, enb_cc_idx, s1ap_cause, std::move(pdu), m_tmsi, mmec);
