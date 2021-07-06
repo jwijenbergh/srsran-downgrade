@@ -505,6 +505,7 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
 
     // Send using the rrc interface with the s1ap interface as parent
     parent->s1ap->initial_ue_reject(rnti, enb_cc_idx, s1ap_cause, std::move(attach_rejmsg));
+    send_connection_release();
   }  // otherwise send the initial ue message like normal
   else
   {
