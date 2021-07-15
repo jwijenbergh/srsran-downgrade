@@ -509,10 +509,9 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
     // Send using the rrc interface with the s1ap interface as parent
     parent->s1ap->initial_ue_reject(rnti, enb_cc_idx, s1ap_cause, std::move(service_rejmsg));
 
-    // Send RRC Connection release
-    send_connection_release();
-    // Remove user thread after RRC Connection Release has been sent, taken from void rrc::process_release_complete(uint16_t rnti) in rrc.cc srsenb
-    parent->task_sched.defer_callback(50, [this]() { parent->rem_user_thread(rnti); });
+    // Send RRC Connection Release and do cleanup, the delay of 50ms is taken from the rrc:process_release_complete function in rrc.cc
+    // This delay is needed for it to be send after the reject message and to be logged correctly in the pcap
+    parent->task_sched.defer_callback(50, [this]() { parent->release_ue(rnti); });
   }
   else // otherwise send the initial ue message like normal
   {
