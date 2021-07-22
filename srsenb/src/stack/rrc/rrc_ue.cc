@@ -487,7 +487,7 @@ void rrc::ue::handle_rrc_con_setup_complete(rrc_conn_setup_complete_s* msg, srsr
   if (msg_type == LIBLTE_MME_SECURITY_HDR_TYPE_SERVICE_REQUEST)
   {
     // Setup reject cause to downgrade to 3G
-    uint8 cause = LIBLTE_MME_EMM_CAUSE_EPS_SERVICES_NOT_ALLOWED;
+    uint8 cause = LIBLTE_MME_EMM_CAUSE_EPS_SERVICES_AND_NON_EPS_SERVICES_NOT_ALLOWED;
     srsran::console("Received Service Request\n");
     srsran::console("Downgrading by sending Service Reject. Cause= %02X\n", cause);
 
