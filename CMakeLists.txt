@@ -40,7 +40,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 include(SRSRANVersion) #sets version information
 include(SRSRANPackage) #setup cpack
 
-#include(CTest)
+include(CTest)
 
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake.in"
@@ -654,4 +654,4 @@ else(ENABLE_SRSEPC)
   message(STATUS "srsEPC build disabled")
 endif(ENABLE_SRSEPC)
 
-#add_subdirectory(test)
+add_subdirectory(test)
