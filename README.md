@@ -1,3 +1,12 @@
+Downgrade attacks
+======
+
+This repo was modified from the original [SrsRAN Project](https://github.com/srsran/srsRAN) at commit [89f16ee](https://github.com/jwijenbergh/srsran-downgrade/commit/89f16eed2b7f2e6c45e675298f5829c230698e1d) with the following modifications:
+- Branch [downgrade-attach-reject](https://github.com/jwijenbergh/srsran-downgrade/tree/downgrade-attach-reject): Send an Attach Reject upon Attach Request with Cause *EPS Services Not Allowed*
+- Branch [downgrade-service-reject](https://github.com/jwijenbergh/srsran-downgrade/tree/downgrade-service-reject): Send a Service Reject upon Service Request with Cause *EPS Services Not Allowed*
+- Branch [dos-attach-reject](https://github.com/jwijenbergh/srsran-downgrade/tree/dos-attach-reject): Send an Attach Reject upon Attach Request with Cause *EPS Services And Non EPS Services Not Allowed*
+- Branch [dos-service-reject](https://github.com/jwijenbergh/srsran-downgrade/tree/dos-service-reject): Send a Service Reject upon Service Request with Cause *EPS Services And Non EPS Services Not Allowed*
+
 srsRAN
 ======
 
